@@ -1,0 +1,34 @@
+[project]
+name = "mtg"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8,<3.13"
+dependencies = [
+    "dagster",
+    "dagster-cloud",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "requests",                    # For API calls
+    "duckdb",                      # For data storage and querying
+    "dagster",                     # For orchestrating workflows
+    "dbt-core",                    # For data transformations
+    "dbt-duckdb",                  # DuckDB adapter for dbt
+    "pandas",                      # For dataframes
+    "ipython",                     # For pretty display
+    "dagster-webserver",           # For orchestration
+    "dagster-duckdb",              # For orchestration
+    "dagster-duckdb-pandas",       # For orchestration
+    "dagster-dbt",                 # For orchestration
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.dagster]
+module_name = "mtg.definitions"
+code_location_name = "mtg"

@@ -1,0 +1,6 @@
+1. Pull backend API from https://backend.commanderspellbook.com/ to see if you
+could link potential inf. combos
+
+2. Make a discord bot that pull a random card per day. ( Daily Magic Card ) == Apart of bible-bot?
+
+3. Make it so metabase is read only.

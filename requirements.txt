@@ -1,0 +1,14 @@
+pytest
+requests                    # For API calls
+duckdb                      # For data storage and querying
+dagster                     # For orchestrating workflows
+dbt-core                    # For data transformations
+dbt-duckdb                  # DuckDB adapter for dbt
+pandas                      # For dataframes
+ipython                     # For pretty display
+dagster                     # For orchestration
+dagster-webserver           # For orchestration
+dagster-duckdb              # For orchestration
+dagster-duckdb-pandas       # For orchestration
+dagster-dbt                 # For orchestration
+dotenv                      # Storing Creds + Files
