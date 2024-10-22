@@ -20,3 +20,6 @@ clean-targets:
 require-dbt-version: [">=1.0.0", "<2.0.0"]
 
 models:
+  dbt_project:
+    staging:
+      +materialized: view

@@ -1,10 +1,10 @@
 # Imports
 import os
 from dagster import (
-    Definitions, 
-    load_assets_from_modules, 
-    ScheduleDefinition, 
-    define_asset_job, 
+    Definitions,
+    load_assets_from_modules,
+    ScheduleDefinition,
+    define_asset_job,
     AssetSelection,
 )
 from dagster_duckdb import DuckDBResource
@@ -12,7 +12,6 @@ from dagster_dbt import DbtCliResource
 from dotenv import load_dotenv
 
 from .assets import api_call_store
-from .project import my_project
 
 # Get DB
 load_dotenv()
@@ -34,10 +33,8 @@ api_schedule = ScheduleDefinition(
 defs = Definitions(
     assets=api_asset,
     resources={
-        "duckdb": DuckDBResource(
-            database=str(DB)
-            ),
-        "dbt": DbtCliResource(project_dir=my_project),
+        "duckdb": DuckDBResource(database=str(DB)),
+        "dbt": DbtCliResource(project_dir="dbt_project"),
     },
     schedules=[api_schedule],
 )

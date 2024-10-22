@@ -1,21 +1,20 @@
 import requests
+import os
 import duckdb
 import pandas as pd
 import pytz as tz
-import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from dagster_duckdb import DuckDBResource
 from dagster import asset, AssetExecutionContext, op, graph_asset
 from dagster_dbt import DbtCliResource, dbt_assets
 
-from ..project import my_project
+load_dotenv()
+MF = str(os.getenv("MANIFEST_PATH"))
 
 
-@asset
-def store_data(
-    context: AssetExecutionContext, duckdb: DuckDBResource, get_pandas
-) -> None:
+@asset(compute_kind="python")
+def store_data(duckdb: DuckDBResource, get_pandas) -> None:
     """Store data in duck db"""
 
     # Define dataframe.
@@ -58,14 +57,14 @@ def store_data(
                     break
 
         # Create query
-        query = f"CREATE TABLE scryfall_data_{date} AS SELECT * FROM df;"
+        query = f"CREATE OR REPLACE TABLE dbo.scryfall_data_{date} AS SELECT * FROM df;"
 
         # Pushing the df into the DB.
         connection.execute(query)
 
 
-@op
-def fetch_api_data(context: AssetExecutionContext) -> pd.DataFrame:
+@asset(compute_kind="python")
+def fetch_api_data() -> pd.DataFrame:
     """Grab the json file from url"""
 
     # API Url
@@ -108,11 +107,11 @@ def fetch_api_data(context: AssetExecutionContext) -> pd.DataFrame:
         return df
 
 
-@graph_asset
+@asset(deps=["fetch_api_data"], compute_kind="python")
 def get_pandas():
     return fetch_api_data()
 
 
-@dbt_assets(manifest=my_project.manifest_path)
-def my_dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource):
+@dbt_assets(manifest=MF)
+def dbt_test(context: AssetExecutionContext, dbt: DbtCliResource):
     yield from dbt.cli(["build"], context=context).stream()
