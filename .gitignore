@@ -4,9 +4,6 @@ dbt_packages/
 logs/
 sisense_elements.json
 reference_state/manifest.json
-.dbt
-profiles.yml
-.dbt/user.yml
 
 # Dagster related
 /dagster_home/
