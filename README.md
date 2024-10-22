@@ -38,7 +38,7 @@ This project pulls data from the Scryfall API and stores it in a DuckDB database
 
 1. **Install Requirements**: Make sure you have Python, DuckDB, Dagster, dbt, and Metabase installed locally.
    ```
-   pip install -e ".[dev]"
+   pip install -r requirements.txt
    ```
 2. **Run the ETL Pipeline**: Use Dagster to orchestrate the pipeline.
 
