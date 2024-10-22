@@ -1,14 +1,16 @@
 # dbt related
-/target/
-/logs/
-/dbt_packages/
+target/
+dbt_packages/
+logs/
+sisense_elements.json
+reference_state/manifest.json
+.dbt
+profiles.yml
+.dbt/user.yml
 
 # Dagster related
 /dagster_home/
 
-.dbt
-profiles.yml
-.dbt/user.yml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
