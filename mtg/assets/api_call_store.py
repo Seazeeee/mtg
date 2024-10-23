@@ -46,7 +46,7 @@ def store_data(duckdb: DuckDBResource, get_pandas) -> None:
                 if (
                     int(table.split("_")[-2])
                     - int(str(datetime.now()).split()[0].split("-")[-1])
-                    >= 7
+                    >= 14
                 ):
                     connection.execute(f"DROP TABLE {table}")
             break
@@ -120,7 +120,7 @@ def date_check(duckdb: DuckDBResource) -> None:
     # Connection string for duckdb
     with duckdb.get_connection() as connection:
         connection.execute(
-            "DELETE FROM scryfall_data WHERE CAST(date AS TIMESTAMP) < NOW() - INTERVAL 2 DAY;"
+            "DELETE FROM scryfall_data WHERE CAST(date AS TIMESTAMP) < NOW() - INTERVAL 14 DAY;"
         )
 
 
