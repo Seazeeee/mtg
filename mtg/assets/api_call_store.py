@@ -60,10 +60,12 @@ def store_data(duckdb: DuckDBResource, get_pandas) -> None:
         # Insert into mass table
         connection.execute(
             f"""
-            INSERT INTO scryfall_data SELECT DISTINCT * FROM {table_name} 
+            INSERT INTO scryfall_data
+            SELECT DISTINCT * FROM {table_name} t
             WHERE NOT EXISTS (
-                SELECT 1 FROM scryfall_data
-                WHERE scryfall_data.id = {table_name}.id
+                SELECT 1
+                FROM scryfall_data sd
+                WHERE CAST(sd.date AS DATE) = CAST(t.date AS DATE)
             )
             """
         )
