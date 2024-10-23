@@ -90,7 +90,7 @@ def fetch_api_data() -> pd.DataFrame:
 
         inside_data = first_splice[data_hit[0]]
 
-        oracle_card = [x for x in inside_data if x["type"] == "oracle_cards"]
+        oracle_card = [x for x in inside_data if x["type"] == "default_cards"]
 
         second_hit = requests.get(oracle_card[0]["download_uri"], timeout=60)
 
