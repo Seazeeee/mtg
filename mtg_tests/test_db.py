@@ -10,6 +10,7 @@ if __name__ == "__main__":
 
     connection = duckdb.connect(DB)
 
-    results = connection.sql("SHOW tables;")
+    results = connection.execute("SHOW TABLES;").fetchall()
 
-    print(results)
+    # print(connection.sql("SHOW TABLES"))
+    print(connection.sql("SELECT COUNT(*) FROM scryfall_data"))

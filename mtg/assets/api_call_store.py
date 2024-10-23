@@ -6,7 +6,7 @@ import pytz as tz
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from dagster_duckdb import DuckDBResource
-from dagster import asset, AssetExecutionContext, op, graph_asset
+from dagster import asset, AssetExecutionContext
 from dagster_dbt import DbtCliResource, dbt_assets
 
 load_dotenv()
@@ -27,6 +27,8 @@ def store_data(duckdb: DuckDBResource, get_pandas) -> None:
 
     date = current_time.strftime("%m_%d_%Y")
 
+    table_name = f"scryfall_data_{date}"
+
     # Connection string for duckdb
     with duckdb.get_connection() as connection:
 
@@ -40,27 +42,31 @@ def store_data(duckdb: DuckDBResource, get_pandas) -> None:
 
         # Loop through
         for table in tables:
-            if table.startswith("api_data"):
-                dates = connection.execute(f"SELECT Date FROM {table};").fetchall()
-
-                for single_date in dates:
-
-                    # Step 1: Convert the date string to a datetime object
-                    date_obj = datetime.strptime(single_date[0], "%m-%d-%Y")
-
-                    # Step 2: Calculate the time difference between now and the table's date
-                    time_diff = datetime.now() - date_obj
-
-                    if time_diff > timedelta(days=1):
-                        connection.execute(f"DROP TABLE {table}")
-
-                    break
+            if table.startswith("scryfall_data_"):
+                if (
+                    int(table.split("_")[-2])
+                    - int(str(datetime.now()).split()[0].split("-")[-1])
+                    >= 7
+                ):
+                    connection.execute(f"DROP TABLE {table}")
+            break
 
         # Create query
-        query = f"CREATE OR REPLACE TABLE dbo.scryfall_data_{date} AS SELECT * FROM df;"
+        query = f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM df;"
 
         # Pushing the df into the DB.
         connection.execute(query)
+
+        # Insert into mass table
+        connection.execute(
+            f"""
+            INSERT INTO scryfall_data SELECT DISTINCT * FROM {table_name} 
+            WHERE NOT EXISTS (
+                SELECT 1 FROM scryfall_data
+                WHERE scryfall_data.id = {table_name}.id
+            )
+            """
+        )
 
 
 @asset(compute_kind="python")
@@ -92,15 +98,9 @@ def fetch_api_data() -> pd.DataFrame:
         # Create dataframe
         df = pd.DataFrame(data)
 
-        # Insert todays date
+        current_time = datetime.now()
 
-        est = tz.timezone("America/New_York")
-
-        current_time = datetime.now(est)
-
-        date = current_time.strftime("%m-%d-%Y")
-
-        df.insert(0, "date", date)
+        df.insert(0, "date", current_time)
 
         # Return the dataframe
 
@@ -110,6 +110,16 @@ def fetch_api_data() -> pd.DataFrame:
 @asset(deps=["fetch_api_data"], compute_kind="python")
 def get_pandas():
     return fetch_api_data()
+
+
+@asset(deps=["store_data"], compute_kind="python")
+def date_check(duckdb: DuckDBResource) -> None:
+
+    # Connection string for duckdb
+    with duckdb.get_connection() as connection:
+        connection.execute(
+            "DELETE FROM scryfall_data WHERE CAST(date AS TIMESTAMP) < NOW() - INTERVAL 2 DAY;"
+        )
 
 
 @dbt_assets(manifest=MF)

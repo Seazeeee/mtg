@@ -1,3 +1,2 @@
--- depends_on: {{ source('dbo','store_data') }}
-
-SELECT prices FROM scryfall_data_10_21_2024
+SELECT DISTINCT date, name, JSON_EXTRACT(prices, '$.usd') AS usd_prices
+FROM scryfall_data
