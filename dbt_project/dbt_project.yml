@@ -24,3 +24,6 @@ models:
     staging:
       +materialized: view
       +schema: main
+    sub_sets:
+      +materialized: table
+      +schema: main
