@@ -4,17 +4,19 @@ import duckdb
 import pandas as pd
 import pytz as tz
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime
 from dagster_duckdb import DuckDBResource
 from dagster import asset, AssetExecutionContext
 from dagster_dbt import DbtCliResource, dbt_assets
+
+from ..project import dbt_project
 
 load_dotenv()
 MF = str(os.getenv("MANIFEST_PATH"))
 
 
 @asset(compute_kind="python")
-def store_data(duckdb: DuckDBResource, get_pandas) -> None:
+def store_data(duckdb: DuckDBResource, get_pandas):
     """Store data in duck db"""
 
     # Define dataframe.
@@ -115,7 +117,7 @@ def get_pandas():
 
 
 @asset(deps=["store_data"], compute_kind="python")
-def date_check(duckdb: DuckDBResource) -> None:
+def date_check(duckdb: DuckDBResource):
 
     # Connection string for duckdb
     with duckdb.get_connection() as connection:
@@ -124,6 +126,6 @@ def date_check(duckdb: DuckDBResource) -> None:
         )
 
 
-@dbt_assets(manifest=MF)
+@dbt_assets(manifest=dbt_project.manifest_path)
 def dbt_test(context: AssetExecutionContext, dbt: DbtCliResource):
     yield from dbt.cli(["build"], context=context).stream()
