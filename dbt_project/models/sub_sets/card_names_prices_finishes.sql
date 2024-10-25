@@ -6,7 +6,7 @@ WITH exploded_prices AS (
                 CAST(JSON_EXTRACT(prices, '$.usd_foil') AS DOUBLE) AS foil_price,
                 CAST(JSON_EXTRACT(prices, '$.usd_etched') AS DOUBLE) AS etched_price,
                 UNNEST(finishes) as finish
-            FROM scryfall_data
+            FROM {{ source ('main', 'scryfall_data') }}
         )
         SELECT
         set,
