@@ -1,5 +1,6 @@
 WITH exploded_prices AS (
             SELECT
+                date,
                 set,
                 name,
                 CAST(JSON_EXTRACT(prices, '$.usd') AS DOUBLE) AS nonfoil_price,
@@ -9,6 +10,7 @@ WITH exploded_prices AS (
             FROM {{ source ('main', 'scryfall_data') }}
         )
         SELECT
+        date,
         set,
         name,
         finish,
