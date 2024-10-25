@@ -9,7 +9,7 @@ from dagster_duckdb import DuckDBResource
 from dagster import asset, AssetExecutionContext
 from dagster_dbt import DbtCliResource, dbt_assets
 
-from ..project import dbt_project
+from mtg.project import dbt_project
 
 load_dotenv()
 MF = str(os.getenv("MANIFEST_PATH"))

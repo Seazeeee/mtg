@@ -1,8 +1,6 @@
 import duckdb
 import os
-import requests
 from dotenv import load_dotenv
-from datetime import datetime
 
 if __name__ == "__main__":
 
