@@ -21,18 +21,16 @@ This project pulls data from the Scryfall API and stores it in a DuckDB database
 
 1. **API Integration**: Successfully pulled data from the [Scryfall API](https://scryfall.com/docs/api) and created tables in DuckDB.
 2. **Historical Tracking**: Implemented a system to track historical changes in the data with a 7-day check to maintain freshness.
+3. **Transformation with dbt**: Implementing dbt to perform transformations on the raw data before loading it into Metabase for visualization.
+4. **Integration of Dagster and Metabase**: Working on running both Dagster and Metabase locally, ensuring smooth orchestration of data pipelines alongside accessible visualizations.
+
+![example_dagster](src/resources/example_tree.png "Dagster Tree")
+
+![example_metabase](src/resources/example_dashboard.png "Metabase Dashboard Example")
 
 ### In Progress
 
-1. **Transformation with dbt**: Implementing dbt to perform transformations on the raw data before loading it into Metabase for visualization.
-2. **Integration of Dagster and Metabase**: Working on running both Dagster and Metabase locally, ensuring smooth orchestration of data pipelines alongside accessible visualizations.
-3. **Backend API for Infinite Combos**: Exploring integration with the [Commander Spellbook API](https://backend.commanderspellbook.com/) to link and analyze potential infinite combos in Magic: The Gathering.
-
-## Next Steps
-
-1. **Implement dbt Models**: Complete the dbt integration for cleaning and transforming the data.
-2. **Dagster and Metabase Compatibility**: Ensure both systems can run concurrently and smoothly on a local setup.
-3. **API Integration for Infinite Combos**: Enhance the data with infinite combo details from the Commander Spellbook API.
+1. **Backend API for Infinite Combos**: Exploring integration with the [Commander Spellbook API](https://backend.commanderspellbook.com/) to link and analyze potential infinite combos in Magic: The Gathering.
 
 ## How to Run
 
