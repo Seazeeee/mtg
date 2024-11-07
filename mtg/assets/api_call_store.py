@@ -4,7 +4,7 @@ import duckdb
 import pandas as pd
 import pytz as tz
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from dagster_duckdb import DuckDBResource
 from dagster import asset, AssetExecutionContext
 from dagster_dbt import DbtCliResource, dbt_assets
@@ -44,14 +44,18 @@ def store_data(duckdb: DuckDBResource, get_pandas):
 
         # Loop through
         for table in tables:
+
             if table.startswith("scryfall_data_"):
-                if (
-                    int(table.split("_")[-2])
-                    - int(str(datetime.now()).split()[0].split("-")[-1])
-                    >= 14
-                ):
+
+                date = table.split("_")[2:]
+
+                table_date = datetime(int(date[-1]), int(date[0]), int(date[1]))
+
+                compare = table_date + timedelta(days=15)
+
+                if datetime.now() > compare:
+
                     connection.execute(f"DROP TABLE {table}")
-            break
 
         # Create query
         query = f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM df;"
@@ -122,7 +126,7 @@ def date_check(duckdb: DuckDBResource):
     # Connection string for duckdb
     with duckdb.get_connection() as connection:
         connection.execute(
-            "DELETE FROM scryfall_data WHERE CAST(date AS TIMESTAMP) < NOW() - INTERVAL 14 DAY;"
+            "DELETE FROM scryfall_data WHERE CAST(date AS TIMESTAMP) < NOW() - INTERVAL 15 DAY;"
         )
 
 
