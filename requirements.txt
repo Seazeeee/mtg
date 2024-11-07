@@ -12,3 +12,4 @@ dagster-duckdb              # For orchestration
 dagster-duckdb-pandas       # For orchestration
 dagster-dbt                 # For orchestration
 dotenv                      # Storing Creds + Files
+matplotlib                  # Data Analysis
