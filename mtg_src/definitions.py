@@ -1,4 +1,3 @@
-# Imports
 import os
 from dagster import (
     Definitions,
@@ -10,31 +9,29 @@ from dagster import (
 from dagster_duckdb import DuckDBResource
 from dagster_dbt import DbtCliResource
 from dotenv import load_dotenv
-
 from .assets import api_call_store
 
-# Get DB
 load_dotenv()
 DB = os.getenv("DUCKDB_PATH")
+DBT_PROFILES = os.getenv("DBT_PROFILES")
 
-# Define asset
 api_asset = load_assets_from_modules([api_call_store])
 
-# Define job
 api_job = define_asset_job("api_job", selection=AssetSelection.all())
 
-# Define Schedule
 api_schedule = ScheduleDefinition(
     job=api_job,
-    cron_schedule="@daily",  # every day
+    cron_schedule="@daily",
 )
 
-# Dagster Definitions
 defs = Definitions(
     assets=api_asset,
     resources={
         "duckdb": DuckDBResource(database=str(DB)),
-        "dbt": DbtCliResource(project_dir="dbt_project"),
+        "dbt": DbtCliResource(
+            project_dir="dbt_project/",
+            profiles_dir=str(DBT_PROFILES),
+        ),
     },
     schedules=[api_schedule],
 )

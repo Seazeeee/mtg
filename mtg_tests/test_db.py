@@ -17,27 +17,32 @@ if __name__ == "__main__":
     # print(
     #     connection.sql(
     #         """
+    #     WITH exploded_prices AS (
+    #                 SELECT
+    #                     date,
+    #                     set,
+    #                     name,
+    #                     CAST(JSON_EXTRACT(prices, '$.usd') AS DOUBLE) AS nonfoil_price,
+    #                     CAST(JSON_EXTRACT(prices, '$.usd_foil') AS DOUBLE) AS foil_price,
+    #                     CAST(JSON_EXTRACT(prices, '$.usd_etched') AS DOUBLE) AS etched_price,
+    #                     UNNEST(finishes) as finish,
+    #                     rarity
+    #                 FROM {{ source ('main', 'scryfall_data') }}
+    #             )
     #             SELECT
-    #             "main"."card_names_prices_finishes"."date" AS "date",
-    #             "main"."card_names_prices_finishes"."name" AS "name",
-    #             "main"."card_names_prices_finishes"."finish" AS "finish",
-    #             AVG("main"."card_names_prices_finishes"."price") AS "avg"
-    #     FROM
-    #             card_names_prices_finishes
-    #     GROUP BY
-    #             "main"."card_names_prices_finishes"."name",
-    #             "main"."card_names_prices_finishes"."finish",
-    #             "main"."card_names_prices_finishes"."date",
-    #     ORDER BY
-    #             "main"."card_names_prices_finishes"."name" ASC,
-    #             "main"."card_names_prices_finishes"."date" ASC,
-    #             "main"."card_names_prices_finishes"."finish" DESC,
-    #         CASE
-    #             WHEN "main"."card_names_prices_finishes"."finish" = 'nonfoil' THEN 1
-    #             WHEN "main"."card_names_prices_finishes"."finish" = 'etched' THEN 2
-    #             WHEN "main"."card_names_prices_finishes"."finish" = 'foil' THEN 3
-    #             ELSE 4  -- This will ensure any unexpected values are sorted last
-    #     END
+    #             date,
+    #             set,
+    #             name,
+    #             finish,
+    #             CASE
+    #                 WHEN finish LIKE '%nonfoil%' THEN nonfoil_price
+    #                 WHEN finish LIKE '%foil%' THEN foil_price
+    #                 WHEN finish LIKE '%etched%' THEN etched_price
+    #             END AS price,
+    #             rarity
+    #             FROM exploded_prices
+    #             WHERE price IS NOT NULL
+    #             AND CAST(date AS DATE) = CAST(current_date() AS DATE)
     # """
     #     )
     # )
