@@ -29,7 +29,7 @@ defs = Definitions(
     resources={
         "duckdb": DuckDBResource(database=str(DB)),
         "dbt": DbtCliResource(
-            project_dir="/home/seaze/Projects/mtg-prod/mtg/dbt_project",
+            project_dir="dbt_project/",
             profiles_dir=str(DBT_PROFILES),
         ),
     },
