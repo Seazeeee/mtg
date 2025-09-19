@@ -8,8 +8,7 @@ from datetime import datetime, timedelta
 from dagster_duckdb import DuckDBResource
 from dagster import asset, AssetExecutionContext
 from dagster_dbt import DbtCliResource, dbt_assets
-
-from mtg.project import dbt_project
+from mtg_src.project import dbt_project
 
 load_dotenv()
 MF = str(os.getenv("MANIFEST_PATH"))
@@ -33,8 +32,6 @@ def store_data(duckdb: DuckDBResource, get_pandas):
 
     # Connection string for duckdb
     with duckdb.get_connection() as connection:
-
-        # Drop old tables
 
         # Fetch all the tables
         results = connection.execute("SHOW TABLES;").fetchall()
@@ -64,17 +61,43 @@ def store_data(duckdb: DuckDBResource, get_pandas):
         connection.execute(query)
 
         # Insert into mass table
-        connection.execute(
-            f"""
-            INSERT INTO scryfall_data
-            SELECT DISTINCT * FROM {table_name} t
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM scryfall_data sd
-                WHERE CAST(sd.date AS DATE) = CAST(t.date AS DATE)
+        try:
+            connection.execute(
+                f"""
+                INSERT INTO scryfall_data
+                SELECT DISTINCT *
+                FROM {table_name} t
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM scryfall_data sd
+                    WHERE CAST(sd.date AS DATE) = CAST(t.date AS DATE)
+                )
+                """
             )
-            """
-        )
+        except Exception as e:
+            if "scryfall_data" in str(e):
+                # Get schema from source table
+                schema = connection.execute(f"DESCRIBE {table_name}").fetchall()
+                cols = ", ".join([f"{col[0]} {col[1]}" for col in schema])
+
+                # Create scryfall_data with the same schema
+                connection.execute(f"CREATE TABLE scryfall_data ({cols});")
+
+                # Retry insert
+                connection.execute(
+                    f"""
+                    INSERT INTO scryfall_data
+                    SELECT DISTINCT *
+                    FROM {table_name} t
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM scryfall_data sd
+                        WHERE CAST(sd.date AS DATE) = CAST(t.date AS DATE)
+                    )
+                    """
+                )
+            else:
+                raise
 
 
 @asset(compute_kind="python")

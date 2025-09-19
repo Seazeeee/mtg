@@ -30,5 +30,5 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.dagster]
-module_name = "mtg.definitions"
+module_name = "mtg_src.definitions"
 code_location_name = "mtg"
