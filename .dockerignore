@@ -1,0 +1,71 @@
+# -------------------
+# Python artifacts
+# -------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+build/
+dist/
+
+# -------------------
+# Virtual environments
+# -------------------
+.venv/
+venv/
+env/
+
+# -------------------
+# Testing
+# -------------------
+pytest_cache/
+.coverage
+htmlcov/
+src/mtg_src/test/
+
+# -------------------
+# dbt specific
+# -------------------
+src/dbt_project/target/
+src/dbt_project/logs/
+src/dbt_project/test_folder/
+dbt_packages/
+
+# -------------------
+# Local data & resources
+# -------------------
+database/
+*.db
+src/resources/
+todo.txt
+
+# -------------------
+# Secrets & configs
+# -------------------
+.env
+*.yml:Zone.Identifier
+*.pyc:Zone.Identifier
+src/dbt_project/profiles.yml  # mount at runtime if needed
+
+# -------------------
+# IDE & OS files
+# -------------------
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# -------------------
+# Docs & metadata
+# -------------------
+README.md
+LICENSE
+
+# -------------------
+# Git
+# -------------------
+.git
