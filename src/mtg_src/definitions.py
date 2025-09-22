@@ -9,11 +9,15 @@ from dagster import (
 from dagster_duckdb import DuckDBResource
 from dagster_dbt import DbtCliResource
 from dotenv import load_dotenv
-from .assets import api_call_store
+from mtg_src.assets import api_call_store
+from pathlib import Path
 
 load_dotenv()
-DB = os.getenv("DUCKDB_PATH")
-DBT_PROFILES = os.getenv("DBT_PROFILES")
+BASE_DIR = Path.cwd()
+CUR_DIR = Path(__file__).parent.parent.resolve()
+DB = (BASE_DIR / Path(str(os.getenv("DUCKDB_PATH")))).resolve()
+DBT_PROFILES = (CUR_DIR / Path(str(os.getenv("DBT")))).resolve()
+DBT_DIR = (CUR_DIR / Path(str(os.getenv("DBT")))).resolve()
 
 api_asset = load_assets_from_modules([api_call_store])
 
@@ -21,7 +25,7 @@ api_job = define_asset_job("api_job", selection=AssetSelection.all())
 
 api_schedule = ScheduleDefinition(
     job=api_job,
-    cron_schedule="@daily",
+    cron_schedule="*/15 * * * *",
 )
 
 defs = Definitions(
@@ -29,7 +33,7 @@ defs = Definitions(
     resources={
         "duckdb": DuckDBResource(database=str(DB)),
         "dbt": DbtCliResource(
-            project_dir="dbt_project/",
+            project_dir=str(DBT_DIR),
             profiles_dir=str(DBT_PROFILES),
         ),
     },

@@ -1,23 +1,29 @@
+# -------------------
 # dbt related
-target/
-dbt_packages/
-logs/
+# -------------------
+src/dbt_project/target/
+src/dbt_project/dbt_packages/
+src/dbt_project/logs/
+src/dbt_project/profiles.yml
 sisense_elements.json
 reference_state/manifest.json
 
+# -------------------
 # Dagster related
+# -------------------
 /dagster_home/
 
-
+# -------------------
 # Byte-compiled / optimized / DLL files
+# -------------------
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
 
+# -------------------
 # Distribution / packaging
+# -------------------
 .Python
 build/
 develop-eggs/
@@ -35,17 +41,18 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
-
-# PyInstaller
+MANIFEST.in
 *.manifest
-*.spec
 
+# -------------------
 # Installer logs
+# -------------------
 pip-log.txt
 pip-delete-this-directory.txt
 
+# -------------------
 # Unit test / coverage reports
+# -------------------
 htmlcov/
 .tox/
 .nox/
@@ -60,63 +67,45 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# -------------------
 # Translations
+# -------------------
 *.mo
 *.pot
 
-# Django stuff:
+# -------------------
+# Django / Flask / Scrapy
+# -------------------
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-
-# Flask stuff:
 instance/
 .webassets-cache
-
-# Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
+# -------------------
+# Sphinx / docs
+# -------------------
 docs/_build/
+.site
 
+# -------------------
 # PyBuilder
+# -------------------
 .pybuilder/
 target/
 
-# Jupyter Notebook
+# -------------------
+# Jupyter & IPython
+# -------------------
 .ipynb_checkpoints
-
-# IPython
 profile_default/
 ipython_config.py
 
-# pyenv
-.python-version
-
-# pipenv
-#Pipfile.lock
-
-# poetry
-#poetry.lock
-
-# pdm
-.pdm.lock
-.pdm.toml
-.pdm-python
-.pdm-build/
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
+# -------------------
 # Environments
+# -------------------
 .env
 .venv
 env/
@@ -125,29 +114,56 @@ ENV/
 env.bak/
 venv.bak/
 
-# Spyder project settings
+# -------------------
+# Dependency managers
+# -------------------
+.python-version
+#Pipfile.lock
+#poetry.lock
+.pdm.lock
+.pdm.toml
+.pdm-python
+.pdm-build/
+__pypackages__/
+
+# -------------------
+# Celery
+# -------------------
+celerybeat-schedule
+celerybeat.pid
+
+# -------------------
+# SageMath
+# -------------------
+*.sage.py
+
+# -------------------
+# IDE / editors
+# -------------------
+.idea/
+.vscode/
 .spyderproject
 .spyproject
-
-# Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
-
-# mypy
+# -------------------
+# Typing / static analysis
+# -------------------
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pyre type checker
 .pyre/
-
-# pytype static type analyzer
 .pytype/
-
-# Cython debug symbols
 cython_debug/
 
-# PyCharm
-.idea/
+# -------------------
+# Database
+# -------------------
+database/*
+
+# -------------------
+# OS junk
+# -------------------
+.DS_Store
+Thumbs.db
+*.swp
